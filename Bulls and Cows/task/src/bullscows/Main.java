@@ -1,12 +1,17 @@
 package bullscows;
 
+import java.util.LinkedHashSet;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        String input = sc.nextLine();
-        new Controller().run(input);
+        //String input = sc.nextLine();
+        //new Controller().run(input);
+        int i = sc.nextInt();
+        Controller.pseudoRandom(i);
+
     }
 }
 
@@ -54,6 +59,33 @@ class View {
 
 class Controller {
 
+    public static void pseudoRandom(int i) {
+
+        if(i >=10){
+            System.out.println("Error: can't generate a secret number with a length of 11 because there aren't enough unique digits.");
+        }else {
+            Long result = 0L;
+
+            long pseudoRandomNumber = System.nanoTime();
+            String pseudoString = Long.toString(pseudoRandomNumber);
+
+            char[] chars = pseudoString.toCharArray();
+            Set<Character> charSet = new LinkedHashSet<Character>();
+            for (char c : chars) {
+                charSet.add(c);
+            }
+
+            StringBuilder sb = new StringBuilder();
+            for (Character character : charSet) {
+                sb.append(character);
+            }
+            String st = sb.toString();
+            st = st.substring(0,i);
+            result = Long.parseLong(st);
+            System.out.println("The random secret number is " + result);
+        }
+    }
+
     public void run(String input) {
 
         Model model = new Model();
@@ -82,7 +114,7 @@ class Controller {
 
         if (model.bulls > 0 & model.cows > 0)
             model.cows = model.bulls - model.cows;
-            new View(model.bulls, model.cows, model.predefinedNumber()).showBullsCows();
+        new View(model.bulls, model.cows, model.predefinedNumber()).showBullsCows();
 
         if (model.bulls == 0 & model.cows == 0)
             new View(model.bulls, model.cows, model.predefinedNumber()).showNone();
