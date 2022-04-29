@@ -6,11 +6,9 @@ import java.util.Set;
 
 public class Main {
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        //String input = sc.nextLine();
-        //new Controller().run(input);
-        int i = sc.nextInt();
-        Controller.pseudoRandom(i);
+
+        new Controller().run();
+
 
     }
 }
@@ -23,21 +21,19 @@ class Model {
     int bulls = 0;
     int cows = 0;
 
-    public String predefinedNumber() {
-        return "1234";
-    }
+
 }
 
 class View {
 
     int bulls;
     int cows;
-    String predefinedNumber;
 
-    public View(int bulls, int cows, String predefinedNumber) {
+
+    public View(int bulls, int cows) {
         this.bulls = bulls;
         this.cows = cows;
-        this.predefinedNumber = predefinedNumber;
+
     }
 
     public void showNone() {
@@ -45,26 +41,27 @@ class View {
     }
 
     public void showBullsCows() {
-        System.out.println("Grade: " + bulls + " bull(s) and " + cows + " cow(s). The secret code is " + predefinedNumber);
+        System.out.println("Grade: " + bulls + " bull(s) and " + cows + " cow(s). The secret code is ");
     }
 
     public void showBulls() {
-        System.out.println("Grade: " + bulls + " bull(s). The secret code is " + predefinedNumber);
+        System.out.println("Grade: " + bulls + " bull(s). The secret code is ");
     }
 
     public void showCows() {
-        System.out.println("Grade: " + cows + " cow(s). The secret code is " + predefinedNumber);
+        System.out.println("Grade: " + cows + " cow(s). The secret code is ");
     }
 }
 
 class Controller {
 
-    public static void pseudoRandom(int i) {
+    public static long pseudoRandom(int length) {
 
-        if(i >=10){
+        Long result = 0L;
+        if(length >=10){
             System.out.println("Error: can't generate a secret number with a length of 11 because there aren't enough unique digits.");
         }else {
-            Long result = 0L;
+
 
             long pseudoRandomNumber = System.nanoTime();
             String pseudoString = Long.toString(pseudoRandomNumber);
@@ -80,26 +77,36 @@ class Controller {
                 sb.append(character);
             }
             String st = sb.toString();
-            st = st.substring(0,i);
+            st = st.substring(0,length);
             result = Long.parseLong(st);
             System.out.println("The random secret number is " + result);
         }
+        return result;
     }
 
-    public void run(String input) {
+    public void run() {
+        Scanner sc = new Scanner(System.in);
+        Scanner ss = new Scanner(System.in);
+        
+
+        int length = sc.nextInt();
+        long random = Controller.pseudoRandom(length);
+        String randomString = Long.toString(random);
 
         Model model = new Model();
+        System.out.println("Enter number with " + length + " digits" );  // czy wszystkei sout pchac do classy View?
+        String input  = ss.nextLine();
 
         //bulls
-        for (int i = 0; i < model.predefinedNumber().length(); i++) {
-            if (input.charAt(i) == model.predefinedNumber().charAt(i)) {
+        for (int i = 0; i < randomString.length(); i++) {
+            if (input.charAt(i) == randomString.charAt(i)) {
                 model.bulls += 1;
             }
         }
         //cows
-        for (int i = 0; i < model.predefinedNumber().length(); i++) {
-            for (int j = 0; j < model.predefinedNumber().length(); j++) {
-                if (input.charAt(i) == model.predefinedNumber().charAt(j)) {
+        for (int i = 0; i < randomString.length(); i++) {
+            for (int j = 0; j < randomString.length(); j++) {
+                if (input.charAt(i) == randomString.charAt(j)) {
                     model.cows += 1;
                 }
             }
@@ -107,16 +114,15 @@ class Controller {
 
 
         if (model.bulls > 0 & model.cows == 0)
-            new View(model.bulls, model.cows, model.predefinedNumber()).showBulls();
+            new View(model.bulls, model.cows);
 
         if (model.cows > 0 & model.bulls == 0)
-            new View(model.bulls, model.cows, model.predefinedNumber()).showCows();
+            new View(model.bulls, model.cows);
 
         if (model.bulls > 0 & model.cows > 0)
             model.cows = model.bulls - model.cows;
-        new View(model.bulls, model.cows, model.predefinedNumber()).showBullsCows();
+        new View(model.bulls, model.cows);
 
         if (model.bulls == 0 & model.cows == 0)
-            new View(model.bulls, model.cows, model.predefinedNumber()).showNone();
-    }
-}
+            new View(model.bulls, model.cows);
+}}
